@@ -41,7 +41,7 @@ module.exports.delete = async (req, res) => {
 
 module.exports.list = async (req, res) => {
   try {
-    const musics = await listMusics()
+    const musics = await listMusics(req.query)
     res.status(200).json(musics)
   } catch (error) {
     res.status(500).json({ error: error })

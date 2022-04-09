@@ -30,8 +30,18 @@ const musicDelete = async (id) => {
   return 'Deleted'
 }
 
-const listMusics = async () => {
-  const data = await MusicSchema.find({})
+const listMusics = async (query) => {
+  const filter = {}
+
+  if (query.name) {
+    Object.assign(filter, { name: { $regex: query.name, $options: 'i' } })
+  }
+
+  if (query.singer) {
+    Object.assign(filter, { singer: { $regex: query.singer, $options: 'i' } })
+  }
+
+  const data = await MusicSchema.find(filter)
 
   return data
 }
