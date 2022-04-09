@@ -4,6 +4,7 @@ const admLoginAuth = require('./middlewares/jwtAuth')
 
 const MusicController = require('./controllers/musicController')
 const UserController = require('./controllers/userController')
+const ListController = require('./controllers/listController')
 
 // Admin routes
 routes.post('/admin', UserController.login)
@@ -14,5 +15,7 @@ routes.delete('/admin/music/:id', admLoginAuth, MusicController.delete)
 
 // General routes
 routes.get('/musics', MusicController.list)
+routes.get('/list', ListController.list)
+routes.post('/list', ListController.addMusicToList)
 
 module.exports = routes
