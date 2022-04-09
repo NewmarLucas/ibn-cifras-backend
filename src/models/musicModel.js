@@ -10,6 +10,26 @@ const musicRegister = async (data) => {
   return 'Created'
 }
 
+const musicEdit = async (data, id) => {
+  await MusicSchema.updateOne({ _id: id }, { $set: data }).exec((err) => {
+    if (err) {
+      return err
+    }
+  })
+
+  return 'Updated'
+}
+
+const musicDelete = async (id) => {
+  await MusicSchema.deleteOne({ _id: id }).exec((err) => {
+    if (err) {
+      return err
+    }
+  })
+
+  return 'Deleted'
+}
+
 const listMusics = async () => {
   const data = await MusicSchema.find({})
 
@@ -18,5 +38,7 @@ const listMusics = async () => {
 
 module.exports = {
   musicRegister,
+  musicEdit,
   listMusics,
+  musicDelete,
 }
