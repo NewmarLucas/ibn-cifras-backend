@@ -43,7 +43,29 @@ const addMusicToList = async (data) => {
   return 'Added'
 }
 
+const removeMusicFromList = async (data, musicId) => {
+  const [oldList] = await MusicListSchema.find({ name: data.name })
+
+  if (!oldList?.musicIdList || !oldList.musicIdList.includes(musicId)) {
+    return 'Music in not in the list'
+  }
+
+  oldList.musicIdList?.splice(oldList.musicIdList.indexOf(musicId), 1)
+
+  await MusicListSchema.updateOne(
+    { name: data.name },
+    { $set: { musicIdList: oldList.musicIdList } }
+  ).exec((err) => {
+    if (err) {
+      return err
+    }
+  })
+
+  return 'Removed'
+}
+
 module.exports = {
   listMusics,
   addMusicToList,
+  removeMusicFromList,
 }

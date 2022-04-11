@@ -17,5 +17,6 @@ routes.delete('/admin/music/:id', admLoginAuth, MusicController.delete)
 routes.get('/musics', MusicController.list)
 routes.get('/list', ListController.list)
 routes.post('/list', ListController.addMusicToList)
+routes.delete('/list/:musicId', ListController.removeMusicFromList)
 
 module.exports = routes
