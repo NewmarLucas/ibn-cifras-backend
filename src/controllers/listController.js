@@ -4,6 +4,7 @@ const {
   removeMusicFromList,
   deleteList,
   createList,
+  findMusicsFromList,
 } = require('../models/listModel')
 
 module.exports.create = async (req, res) => {
@@ -21,8 +22,23 @@ module.exports.create = async (req, res) => {
 
 module.exports.list = async (req, res) => {
   try {
-    const musics = await listMusics(req.query)
-    res.status(200).json(musics)
+    const response = await listMusics(req.query)
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
+}
+
+module.exports.musicsFromList = async (req, res) => {
+  const { listName } = req.params
+
+  try {
+    const response = await findMusicsFromList(listName)
+    if (response === 'List not found') {
+      res.status(401).json(response)
+      return
+    }
+    res.status(200).json(response)
   } catch (error) {
     res.status(500).json({ error: error })
   }
@@ -55,11 +71,11 @@ module.exports.remove = async (req, res) => {
 }
 
 module.exports.removeMusicFromList = async (req, res) => {
-  const data = req.body
-  const { musicId } = req.params
+  const { param } = req.params
+  const [musicId, listName] = param.split('-')
 
   try {
-    const response = await removeMusicFromList(data, musicId)
+    const response = await removeMusicFromList(listName, musicId)
     if (response === 'Music in not in the list') {
       res.status(401).json(response)
       return

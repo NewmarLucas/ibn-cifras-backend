@@ -14,22 +14,22 @@ const createList = async (data) => {
   return 'Added'
 }
 
-const listMusics = async (query) => {
-  const filter = {}
+const listMusics = async () => {
+  const list = await MusicListSchema.find()
 
-  if (query.name) {
-    Object.assign(filter, { name: query.name })
-  }
+  return list
+}
 
-  const list = await MusicListSchema.find(filter)
-  const musicsList = await Promise.all(
-    list[0]?.musicIdList?.map(async (item) => {
-      const music = await MusicSchema.find({ _id: item })
-      return music[0]
-    })
-  )
+const findMusicsFromList = async (listName) => {
+  const list = await MusicListSchema.findOne({ title: { $regex: listName, $options: 'i' } })
+  if (!list) return 'List not found'
 
-  return filter?.name ? { name: list[0].name, musicsList } : list
+  const musics = await Promise.all(list?.musicIdList?.map(async (item) => {
+    const music = await MusicSchema.findOne({ _id: item })
+    return music
+  }))
+
+  return musics
 }
 
 const deleteList = async (name) => {
@@ -43,7 +43,7 @@ const updateMusicList = async (data) => {
 
   if (!list) return 'List not found'
 
-  await MusicListSchema.updateOne({ $set: { musicIdList: data.musicIdList } }).exec((err) => {
+  await MusicListSchema.updateOne({ title: data.title }, { $set: { musicIdList: data.musicIdList } }).exec((err) => {
     if (err) {
       return err
     }
@@ -52,8 +52,8 @@ const updateMusicList = async (data) => {
   return 'Added'
 }
 
-const removeMusicFromList = async (data, musicId) => {
-  const [oldList] = await MusicListSchema.find({ name: data.name })
+const removeMusicFromList = async (listName, musicId) => {
+  const [oldList] = await MusicListSchema.find({ name: listName })
 
   if (!oldList?.musicIdList || !oldList.musicIdList.includes(musicId)) {
     return 'Music in not in the list'
@@ -62,7 +62,7 @@ const removeMusicFromList = async (data, musicId) => {
   oldList.musicIdList?.splice(oldList.musicIdList.indexOf(musicId), 1)
 
   await MusicListSchema.updateOne(
-    { name: data.name },
+    { name: listName },
     { $set: { musicIdList: oldList.musicIdList } }
   ).exec((err) => {
     if (err) {
@@ -79,4 +79,5 @@ module.exports = {
   removeMusicFromList,
   deleteList,
   createList,
+  findMusicsFromList,
 }
