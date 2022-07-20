@@ -53,7 +53,7 @@ const updateMusicList = async (data) => {
 }
 
 const removeMusicFromList = async (listName, musicId) => {
-  const [oldList] = await MusicListSchema.find({ name: listName })
+  const oldList = await MusicListSchema.findOne({ title: { $regex: listName, $options: 'i' } })
 
   if (!oldList?.musicIdList || !oldList.musicIdList.includes(musicId)) {
     return 'Music in not in the list'
@@ -62,7 +62,7 @@ const removeMusicFromList = async (listName, musicId) => {
   oldList.musicIdList?.splice(oldList.musicIdList.indexOf(musicId), 1)
 
   await MusicListSchema.updateOne(
-    { name: listName },
+    { title: listName },
     { $set: { musicIdList: oldList.musicIdList } }
   ).exec((err) => {
     if (err) {
