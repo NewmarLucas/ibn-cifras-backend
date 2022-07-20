@@ -9,12 +9,12 @@ module.exports.register = async (req, res) => {
   const data = req.body
 
   try {
-    const music = await musicRegister(data)
-    if (music === 'Wrong link') {
-      res.status(401).json(music)
+    const response = await musicRegister(data)
+    if (response === 'Wrong link' || response === 'Music already exists') {
+      res.status(401).json(response)
       return
     }
-    res.status(200).json(music)
+    res.status(200).json(response)
   } catch (error) {
     res.status(500).json({ error: error })
   }
