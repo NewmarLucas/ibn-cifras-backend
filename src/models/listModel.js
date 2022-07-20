@@ -1,6 +1,19 @@
 const MusicListSchema = require('../database/schema/musicList')
 const MusicSchema = require('../database/schema/music')
 
+const createList = async (data) => {
+  const list = await MusicListSchema.findOne({ title: data.title })
+  if (list) return 'List already exists'
+
+  await new MusicListSchema({
+    title: data.title,
+    subtitle: data.subtitle,
+    musicIdList: [],
+  }).save()
+
+  return 'Added'
+}
+
 const listMusics = async (query) => {
   const filter = {}
 
@@ -16,29 +29,25 @@ const listMusics = async (query) => {
     })
   )
 
-  return { name: list[0].name, musicsList }
+  return filter?.name ? { name: list[0].name, musicsList } : list
 }
 
-const addMusicToList = async (data) => {
-  const oldList = await MusicListSchema.find({ name: data.name })
+const deleteList = async (name) => {
+  await MusicListSchema.deleteOne({ name: name })
 
-  if (oldList && oldList.length !== 0) {
-    await MusicListSchema.updateOne(
-      { name: data.name },
-      { $set: { musicIdList: data.musicIdList } }
-    ).exec((err) => {
-      if (err) {
-        return err
-      }
-    })
+  return 'Removed'
+}
 
-    return 'Added'
-  }
+const updateMusicList = async (data) => {
+  const list = await MusicListSchema.findOne({ title: data.title })
 
-  await new MusicListSchema({
-    name: data.name,
-    musicIdList: data.musicIdList,
-  }).save()
+  if (!list) return 'List not found'
+
+  await MusicListSchema.updateOne({ $set: { musicIdList: data.musicIdList } }).exec((err) => {
+    if (err) {
+      return err
+    }
+  })
 
   return 'Added'
 }
@@ -66,6 +75,8 @@ const removeMusicFromList = async (data, musicId) => {
 
 module.exports = {
   listMusics,
-  addMusicToList,
+  updateMusicList,
   removeMusicFromList,
+  deleteList,
+  createList,
 }

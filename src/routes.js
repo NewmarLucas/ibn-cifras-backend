@@ -13,10 +13,14 @@ routes.post('/admin/music', admLoginAuth, MusicController.register)
 routes.put('/admin/music/:id', admLoginAuth, MusicController.edit)
 routes.delete('/admin/music/:id', admLoginAuth, MusicController.delete)
 
+// Admin routes music list
+routes.post('/admin/list', admLoginAuth, ListController.create)
+routes.delete('/admin/delete-list/:name', admLoginAuth, ListController.remove)
+routes.post('/admin/addMusicToList', admLoginAuth, ListController.addMusicToList)
+routes.delete('/admin/list/:musicId', admLoginAuth, ListController.removeMusicFromList)
+
 // General routes
 routes.get('/musics', MusicController.list)
 routes.get('/list', ListController.list)
-routes.post('/list', ListController.addMusicToList)
-routes.delete('/list/:musicId', ListController.removeMusicFromList)
 
 module.exports = routes

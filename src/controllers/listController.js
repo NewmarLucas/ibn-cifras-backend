@@ -1,8 +1,23 @@
 const {
   listMusics,
-  addMusicToList,
+  updateMusicList,
   removeMusicFromList,
+  deleteList,
+  createList,
 } = require('../models/listModel')
+
+module.exports.create = async (req, res) => {
+  try {
+    const response = await createList(req.body)
+    if (response === 'List already exists') {
+      res.status(401).json(response)
+      return
+    }
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
+}
 
 module.exports.list = async (req, res) => {
   try {
@@ -17,8 +32,23 @@ module.exports.addMusicToList = async (req, res) => {
   const data = req.body
 
   try {
-    const musics = await addMusicToList(data)
-    res.status(200).json(musics)
+    const response = await updateMusicList(data)
+    if (response === 'List not found') {
+      res.status(401).json(response)
+      return
+    }
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
+}
+
+module.exports.remove = async (req, res) => {
+  const { name } = req.params
+
+  try {
+    const response = await deleteList(name)
+    res.status(200).json(response)
   } catch (error) {
     res.status(500).json({ error: error })
   }
@@ -29,8 +59,12 @@ module.exports.removeMusicFromList = async (req, res) => {
   const { musicId } = req.params
 
   try {
-    const musics = await removeMusicFromList(data, musicId)
-    res.status(200).json(musics)
+    const response = await removeMusicFromList(data, musicId)
+    if (response === 'Music in not in the list') {
+      res.status(401).json(response)
+      return
+    }
+    res.status(200).json(response)
   } catch (error) {
     res.status(500).json({ error: error })
   }

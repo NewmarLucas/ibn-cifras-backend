@@ -7,11 +7,14 @@ const musicListSchema = new schema({
     required: true,
     default: [],
   },
-  name: {
+  title: {
     type: String,
-    enum: ['SATURDAY', 'SUNDAY', 'TUESDAY', 'OTHER'],
     required: true,
   },
+  subtitle: {
+    type: String,
+    required: true,
+  }
 })
 
 module.exports = mongoose.model('musicList', musicListSchema)
