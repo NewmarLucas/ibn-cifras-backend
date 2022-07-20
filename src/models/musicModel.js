@@ -1,6 +1,8 @@
 const MusicSchema = require('../database/schema/music')
 
 const musicRegister = async (data) => {
+  const splitedLink = data.url?.split('/')
+  if (splitedLink[splitedLink.length - 1] !== 'imprimir.html') return 'Wrong link'
   await new MusicSchema({
     name: data.name,
     singer: data.singer,
