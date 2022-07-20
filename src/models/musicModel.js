@@ -13,6 +13,14 @@ const musicRegister = async (data) => {
 }
 
 const musicEdit = async (data, id) => {
+  const music = await MusicSchema.findOne({ _id: id })
+  if (!music) return 'Music does not exists'
+
+  if (data?.url) {
+    const splitedLink = data.url?.split('/')
+    if (splitedLink[splitedLink.length - 1] !== 'imprimir.html') return 'Wrong link'
+  }
+
   await MusicSchema.updateOne({ _id: id }, { $set: data }).exec((err) => {
     if (err) {
       return err

@@ -26,6 +26,10 @@ module.exports.edit = async (req, res) => {
 
   try {
     const music = await musicEdit(data, id)
+    if (music === 'Wrong link' || music === 'Music does not exists') {
+      res.status(401).json(music)
+      return
+    }
     res.status(200).json(music)
   } catch (error) {
     res.status(500).json({ error: error })
