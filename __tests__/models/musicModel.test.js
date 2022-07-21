@@ -1,8 +1,3 @@
-const {
-  expect,
-  it,
-  describe
-} = require('@jest/globals')
 const mockingoose = require('mockingoose')
 const MusicSchema = require('../../src/database/schema/music')
 

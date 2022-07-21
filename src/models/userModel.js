@@ -1,13 +1,13 @@
 const { sign } = require('../config/jwt')
 const UserSchema = require('../database/schema/user')
 
-const emailExists = (email) => {
-  const user = UserSchema.find({ email: email })
-  return user?.length > 0
-}
-
 const register = async (data) => {
-  if (emailExists(data.email)) {
+  if (!data?.name || !data?.email || !data?.password) {
+    return 'Wrong data'
+  }
+
+  const user = await UserSchema.findOne({ email: data.email })
+  if (user) {
     return 'Email already exists'
   }
 
@@ -31,6 +31,7 @@ const login = async (email, password) => {
       return 'Invalid user'
     }
     const token = sign({ user: user._id })
+    console.log(token)
     return { user, token }
   } catch (err) {
     return err
