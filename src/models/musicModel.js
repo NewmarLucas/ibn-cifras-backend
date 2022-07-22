@@ -35,6 +35,9 @@ const musicEdit = async (data, id) => {
 }
 
 const musicDelete = async (id) => {
+  const music = await MusicSchema.findOne({ _id: id })
+  if (!music) return 'Music does not exists'
+
   await MusicSchema.deleteOne({ _id: id }).exec((err) => {
     if (err) {
       return err
@@ -47,11 +50,11 @@ const musicDelete = async (id) => {
 const listMusics = async (query) => {
   const filter = {}
 
-  if (query.name) {
+  if (query?.name) {
     Object.assign(filter, { name: { $regex: query.name, $options: 'i' } })
   }
 
-  if (query.singer) {
+  if (query?.singer) {
     Object.assign(filter, { singer: { $regex: query.singer, $options: 'i' } })
   }
 

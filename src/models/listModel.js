@@ -2,6 +2,8 @@ const MusicListSchema = require('../database/schema/musicList')
 const MusicSchema = require('../database/schema/music')
 
 const createList = async (data) => {
+  if (!data?.title || !data?.subtitle || data?.title === '' || data?.subtitle === '') return 'Wrong data'
+
   const list = await MusicListSchema.findOne({ title: data.title })
   if (list) return 'List already exists'
 
@@ -33,14 +35,15 @@ const findMusicsFromList = async (listName) => {
 }
 
 const deleteList = async (name) => {
-  await MusicListSchema.deleteOne({ name: name })
+  const list = await MusicListSchema.findOne({ name })
+  if (!list) return 'List not found'
 
+  await MusicListSchema.deleteOne({ name })
   return 'Removed'
 }
 
 const updateMusicList = async (data) => {
   const list = await MusicListSchema.findOne({ title: data.title })
-
   if (!list) return 'List not found'
 
   await MusicListSchema.updateOne({ title: data.title }, { $set: { musicIdList: data.musicIdList } }).exec((err) => {
@@ -54,6 +57,7 @@ const updateMusicList = async (data) => {
 
 const removeMusicFromList = async (listName, musicId) => {
   const oldList = await MusicListSchema.findOne({ title: { $regex: listName, $options: 'i' } })
+  if (!oldList) return 'List not found'
 
   if (!oldList?.musicIdList || !oldList.musicIdList.includes(musicId)) {
     return 'Music in not in the list'
