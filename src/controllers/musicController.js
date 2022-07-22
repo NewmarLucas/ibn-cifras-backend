@@ -40,8 +40,12 @@ module.exports.delete = async (req, res) => {
   const { id } = req.params
 
   try {
-    const music = await musicDelete(id)
-    res.status(200).json(music)
+    const response = await musicDelete(id)
+    if (response === 'Music does not exists') {
+      res.status(400).json(response)
+      return
+    }
+    res.status(200).json(response)
   } catch (error) {
     res.status(500).json({ error: error })
   }
