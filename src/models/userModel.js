@@ -31,7 +31,6 @@ const login = async (email, password) => {
       return 'Invalid user'
     }
     const token = sign({ user: user._id })
-    console.log(token)
     return { user, token }
   } catch (err) {
     return err
