@@ -10,8 +10,8 @@ const {
 module.exports.create = async (req, res) => {
   try {
     const response = await createList(req.body)
-    if (response === 'List already exists') {
-      res.status(401).json(response)
+    if (response === 'List already exists' || response === 'Wrong data') {
+      res.status(400).json(response)
       return
     }
     res.status(200).json(response)
@@ -64,6 +64,10 @@ module.exports.remove = async (req, res) => {
 
   try {
     const response = await deleteList(name)
+    if (response === 'List not found') {
+      res.status(400).json(response)
+      return
+    }
     res.status(200).json(response)
   } catch (error) {
     res.status(500).json({ error: error })
@@ -76,8 +80,8 @@ module.exports.removeMusicFromList = async (req, res) => {
 
   try {
     const response = await removeMusicFromList(listName, musicId)
-    if (response === 'Music in not in the list') {
-      res.status(401).json(response)
+    if (response === 'Music in not in the list' || response === 'List not found') {
+      res.status(400).json(response)
       return
     }
     res.status(200).json(response)
