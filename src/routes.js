@@ -1,10 +1,15 @@
 const express = require('express')
 const routes = express.Router()
 const admLoginAuth = require('./middlewares/jwtAuth')
+const { version } = require('../package.json')
 
 const MusicController = require('./controllers/musicController')
 const UserController = require('./controllers/userController')
 const ListController = require('./controllers/listController')
+
+routes.get('/', (_, res) => {
+  res.status(200).json({ version })
+})
 
 // Admin routes
 routes.post('/admin', UserController.login)
