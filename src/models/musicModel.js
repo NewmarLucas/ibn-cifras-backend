@@ -2,7 +2,7 @@ const MusicSchema = require('../database/schema/music')
 
 const musicRegister = async (data) => {
   const splitedLink = data.url?.split('/')
-  if (splitedLink[splitedLink.length - 1] !== 'imprimir.html') return 'Wrong link'
+  if (splitedLink[splitedLink.length - 1] !== 'imprimir.html' || splitedLink[2] === 'm.cifraclub.com.br') return 'Wrong link'
 
   const music = await MusicSchema.findOne({ url: data.url })
   if (music) return 'Music already exists'
@@ -22,7 +22,7 @@ const musicEdit = async (data, id) => {
 
   if (data?.url) {
     const splitedLink = data.url?.split('/')
-    if (splitedLink[splitedLink.length - 1] !== 'imprimir.html') return 'Wrong link'
+    if (splitedLink[splitedLink.length - 1] !== 'imprimir.html' || splitedLink[2] === 'm.cifraclub.com.br') return 'Wrong link'
   }
 
   await MusicSchema.updateOne({ _id: id }, { $set: data }).exec((err) => {
