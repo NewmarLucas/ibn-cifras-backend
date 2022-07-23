@@ -58,7 +58,7 @@ const listMusics = async (query) => {
     Object.assign(filter, { singer: { $regex: query.singer, $options: 'i' } })
   }
 
-  const data = await MusicSchema.find(filter)
+  const data = await MusicSchema.find(filter)?.sort({ name: 1 })
 
   return data
 }
